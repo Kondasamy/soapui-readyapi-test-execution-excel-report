@@ -15,11 +15,11 @@ import com.eviware.soapui.support.action.support.AbstractSoapUIAction
 import javax.swing.*;
 
 @ActionConfiguration(actionGroup = ActionGroups.OPEN_PROJECT_ACTIONS)
-class ProjectSaveResponseAction extends AbstractSoapUIAction <Project>
+class ProjectExportTestReport extends AbstractSoapUIAction <Project>
 {
-    public ProjectSaveResponseAction()
+    public ProjectExportTestReport()
     {
-        super("Plugin:Export Request and Response", "Saves recent responses of underlying TestSteps's to a file")
+        super("Plugin:Export Test Report", "Exports test execution report to an Excel(XLSX) file")
     }
 
     @Override
