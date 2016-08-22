@@ -1,13 +1,9 @@
 package com.kondasamy.soapui.plugin.Utilities
 
-import org.apache.poi.xssf.usermodel.XSSFWorkbook
-/**
- * Created by Kondasamy J
- * Contact: Kondasamy@outlook.com
- */
+import com.xlson.groovycsv.*
 
-XSSFWorkbook wb = new XSSFWorkbook()
-FileOutputStream fileOut = new FileOutputStream("D:/dummy.xlsx")
-wb.write(fileOut)
-wb.close()
-
+def f = new File("D:/DUMMY.csv")
+def someText = '''abcd,2454,6786
+bsgc,8989,6565
+fgf,8989,323'''
+f.append(someText)
