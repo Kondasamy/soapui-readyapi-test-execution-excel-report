@@ -12,8 +12,6 @@ import com.eviware.soapui.plugins.ActionConfiguration
 import com.eviware.soapui.support.UISupport
 import com.eviware.soapui.support.action.support.AbstractSoapUIAction
 
-import javax.swing.*;
-
 @ActionConfiguration(actionGroup = ActionGroups.OPEN_PROJECT_ACTIONS)
 class ProjectExportTestReport extends AbstractSoapUIAction <Project>
 {
