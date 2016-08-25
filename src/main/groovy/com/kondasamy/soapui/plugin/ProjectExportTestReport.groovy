@@ -161,7 +161,8 @@ class ProjectExportTestReport extends AbstractSoapUIAction <Project>
                                     }
                         }
                 }
-        UISupport.showInfoMessage("Artifacts Successfully exported!! Please see the SoapUI log for more information!","File Export Success!!!")
+        SoapUI.log.info "Results exported to : " + file.absolutePath
+        UISupport.showInfoMessage("Test Results Successfully exported!! Please see the SoapUI log for more information!","Test Result Export Success!!!")
     }
 }
 /**
