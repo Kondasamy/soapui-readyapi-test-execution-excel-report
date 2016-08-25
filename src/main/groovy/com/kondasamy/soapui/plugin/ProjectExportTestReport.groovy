@@ -43,10 +43,7 @@ class ProjectExportTestReport extends AbstractSoapUIAction <Project>
             file = new File(SubDir1,fileName)
         }
         //Append header in CSV file
-        if(file.exists())
-        {
-            file.append("PROJECT,TYPE,TEST CASE NAME,TEST STEP COUNT,TEST STATUS,EXECUTED BY\n")
-        }
+        file.append("PROJECT,TYPE,TEST CASE NAME,TEST STEP COUNT,TEST STATUS,EXECUTED BY\n")
         /*
          * Iterate through each test cases and collect the data
          */
@@ -54,45 +51,58 @@ class ProjectExportTestReport extends AbstractSoapUIAction <Project>
         project.getTestSuiteList().each
                 {
                     testSuite->
-                        def tsName = testSuite.name
-                        testSuite.getTestCaseList().each
-                                {
-                                    testCase->
-                                        def tcName = testCase.name
-                                        def testStepCount = testCase.testStepCount
-                                        def testRunFlag = 0
-                                        testCase.getTestStepsOfType(com.eviware.soapui.impl.wsdl.teststeps.RestTestRequestStep.class).each
-                                                {
-                                                    tests->
-                                                        def response = tests.httpRequest.response.getRawResponseData()
-                                                        if( response == null || response.length == 0 )
+                        //Ignore the disabled test suites
+                        if(!testSuite.isDisabled())
+                        {
+                            def tsName = testSuite.name
+                            testSuite.getTestCaseList().each
+                                    {
+                                        testCase->
+                                            if(!testCase.isDisabled())
+                                            {
+                                                def tcName = testCase.name
+                                                def testStepCount = testCase.testStepCount
+                                                def testRunFlag = 0
+                                                testCase.getTestStepsOfType(com.eviware.soapui.impl.wsdl.teststeps.RestTestRequestStep.class).each
                                                         {
-                                                            SoapUI.log.warn "Empty Response data for TestStep : "+ tests.testStep.testCase.testSuite.name + "=>"+tests.testStep.testCase.name+ "->"+tests.name
+                                                            tests->
+                                                                if(!tests.isDisabled() && tests.httpRequest.response!=null)
+                                                                {
+                                                                    def response = tests.httpRequest.response.getRawResponseData()
+                                                                    if( response == null || response.length == 0 )
+                                                                    {
+                                                                        SoapUI.log.warn "Empty Response data for TestStep : "+ tests.testStep.testCase.testSuite.name + "=>"+tests.testStep.testCase.name+ "->"+tests.name
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        def tstName = tests.getName()
+                                                                        SoapUI.log.info "Assertion Status: "+tests.assertionStatus +"Test Step : " +tstName
+                                                                    }
+                                                                }
                                                         }
-                                                        else
+                                                testCase.getTestStepsOfType(com.eviware.soapui.impl.wsdl.teststeps.WsdlTestRequestStep.class).each
                                                         {
-                                                            def tstName = tests.getName()
-                                                            SoapUI.log.info "Assertion Status: "+tests.assertionStatus +"Test Step : " +tstName
+                                                            tests->
+                                                                if(!tests.isDisabled() && tests.httpRequest.response!=null)
+                                                                {
+                                                                    def response = tests.httpRequest.response.getRawResponseData()
+                                                                    if( response == null || response.length == 0 )
+                                                                    {
+                                                                        SoapUI.log.warn "Empty Response data for TestStep : "+ tests.testStep.testCase.testSuite.name + "=>"+tests.testStep.testCase.name+ "->"+tests.name
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        def tstName = tests.getName()
+                                                                        SoapUI.log.info "Assertion Status: "+tests.assertionStatus +"Test Step : " +tstName
+                                                                    }
+                                                                }
                                                         }
-                                                }
-                                        testCase.getTestStepsOfType(com.eviware.soapui.impl.wsdl.teststeps.WsdlTestRequestStep.class).each
-                                                {
-                                                    tests->
-                                                        def response = tests.httpRequest.response.getRawResponseData()
-                                                        if( response == null || response.length == 0 )
-                                                        {
-                                                            SoapUI.log.warn "Empty Response data for TestStep : "+ tests.testStep.testCase.testSuite.name + "=>"+tests.testStep.testCase.name+ "->"+tests.name
-                                                        }
-                                                        else
-                                                        {
-                                                            def tstName = tests.getName()
-                                                            SoapUI.log.info "Assertion Status: "+tests.assertionStatus +"Test Step : " +tstName
-                                                        }
+                                                SoapUI.log.info "Test Case Name : "+ tcName
+                                                file.append("$projName,$tsName,$tcName,$testStepCount,PASS,$currentUser\n")
+                                            }
+                                    }
+                        }
 
-                                                }
-                                        SoapUI.log.info "Test Case Name : "+ tcName
-                                        file.append("$projName,$tsName,$tcName,$testStepCount,PASS,$currentUser")
-                                }
 
                 }
         UISupport.showInfoMessage("Artifacts Successfully exported!! Please see the SoapUI log for more information!","File Export Success!!!")
