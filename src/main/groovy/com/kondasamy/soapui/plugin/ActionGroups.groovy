@@ -1,6 +1,6 @@
 package com.kondasamy.soapui.plugin;
-public class ActionGroups {
-
+public class ActionGroups
+{
     /*
      * Actions applied to the workspace. They will also be inserted into the File menu of SoapUI.
      * Have your action class extend AbstractSoapUIAction<WorkspaceImpl>.
@@ -119,7 +119,4 @@ public class ActionGroups {
      * Have your action class extend AbstractSoapUIAction<WsdlMessageAssertion>.
      */
     public static final String ASSERTION_ACTIONS = "WsdlMessageAssertionActions";
-
-
-
 }
